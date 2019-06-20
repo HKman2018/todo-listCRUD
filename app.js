@@ -59,17 +59,24 @@ app.get('/todos/:id', (req, res) => {
     return res.render('detail', { todo: todo })
   })
 })
-//新增一筆 Todo  4
-app.get('/todos', (req, res) => {
-  res.send('建立Todo')
-})
+
 //修改Todo 頁面 5
 app.get('/todos/:id/edit', (req, res) => {
-  res.send('修改Todo頁面')
+  Todo.findById(req.params.id, (err, todo) => {
+    if (err) return console.error(err)
+    return res.render('edit', { todo: todo })
+  })
 })
 //修改Todo 6
 app.post('/todos/:id', (req, res) => {
-  res.send('修改Todo')
+  Todo.findById(req.params.id, (err, todo) => {
+    if (err) return console.error(err)
+    todo.name = req.body.name
+    todo.save(err => {
+      if (err) return console.error(err)
+      return res.redirect(`/todos/${req.params.id}`)
+    })
+  })
 })
 //刪除Todo 7 
 app.post('/todos/:id/delete', (req, res) => {
