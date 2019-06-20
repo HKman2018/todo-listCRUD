@@ -3,9 +3,12 @@ const app = express()
 const exphbs = require('express-handlebars')                       // 啟用 
 const mongoose = require('mongoose')
 const Todo = require('./models/todo')
+const bodyParser = require('body-parser')
+
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
+app.use(bodyParser.urlencoded({ extended: true }))
 
 mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true })
 
@@ -36,7 +39,17 @@ app.get('/todos', (req, res) => {
 
 //新增一筆 Todo頁面 2
 app.get('/todos/new', (req, res) => {
-  res.send('新增Todo頁面')
+  res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const todo = new Todo({
+    name: req.body.name
+  })
+  todo.save((err) => {
+    if (err) return console.log(err)
+    return res.redirect('/')
+  })
 })
 //顯示一筆 Todo的詳細內容 3
 app.get('/todos/:id', (req, res) => {
