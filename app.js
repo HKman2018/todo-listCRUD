@@ -32,10 +32,7 @@ app.get('/', (req, res) => {
     return res.render('index', { todos: todos })
   })
 })
-//列出全部 Todo 1
-app.get('/todos', (req, res) => {
-  res.send('列出所有Todo')
-})
+
 
 //新增一筆 Todo頁面 2
 app.get('/todos/new', (req, res) => {
@@ -80,8 +77,17 @@ app.post('/todos/:id', (req, res) => {
 })
 //刪除Todo 7 
 app.post('/todos/:id/delete', (req, res) => {
-  res.send('刪除Todo')
+  Todo.findById(req.params.id, (err, todo) => {
+    if (err) return console.error(err)
+    todo.remove(err => {
+      if (err) return console.error(err)
+      return res.redirect('/')
+    })
+  })
 })
+
+
+
 // 設定 express port 3000
 app.listen(3000, () => {
   console.log('App is running')
