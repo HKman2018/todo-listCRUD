@@ -27,10 +27,12 @@ db.once('open', () => {
 
 // 設定第一個首頁路由
 app.get('/', (req, res) => {
-  Todo.find((err, todos) => {
-    if (err) return console.error(err)
-    return res.render('index', { todos: todos })
-  })
+  Todo.find({})
+    .sort({ name: 'asc' })
+    .exec((err, todos) => {
+      if (err) return console.error(err)
+      return res.render('index', { todos: todos })
+    })
 })
 
 
