@@ -3,6 +3,8 @@ const app = express()
 const exphbs = require('express-handlebars')                       // 啟用 
 const mongoose = require('mongoose')
 const Todo = require('./models/todo')
+const session = require('express-session')
+const passport = require('passport')
 
 
 //into methodOverride
@@ -16,11 +18,11 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 
-//setting method- override
+//setting method-override
 app.use(methodOverride('_method'))
+
 //mongoose connected
 mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true })
-
 // mongoose 連線後透過 mongoose.connection 拿到 Connection 的物件
 const db = mongoose.connection
 
@@ -34,8 +36,23 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
-// 設定第一個首頁路由
+//設定session 
+app.use(session({
+  secret: 'areyouswinngareyouswinng',
+}))
 
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+require('./config/passport')(passport)
+
+app.use((req, res, next) => {
+  res.locals.user = req.user
+  next()
+})
+
+// 設定第一個首頁路由
 app.use('/', require('./routes/home'))
 app.use('/todos', require('./routes/todo'))
 app.use('/users', require('./routes/users'))
