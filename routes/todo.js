@@ -2,13 +2,15 @@
 const express = require('express')
 const router = express.Router()
 const Todo = require('../models/todo')
-// 設定 /todos 路由
 
-router.get('/new', (req, res) => {
+const { authenticated } = require('../config/auth')
+
+// 設定 /todos 路由
+router.get('/new', authenticated, (req, res) => {
   res.render('new')
 })
 
-router.post('', (req, res) => {
+router.post('/', authenticated, (req, res) => {
   const todo = new Todo({
     name: req.body.name
   })
@@ -18,7 +20,7 @@ router.post('', (req, res) => {
   })
 })
 //顯示一筆 Todo的詳細內容 3
-router.get('/:id', (req, res) => {
+router.get('/:id', authenticated, (req, res) => {
   //req.params.id
   Todo.findById(req.params.id, (err, todo) => {
     if (err) return console.log(err)
@@ -27,14 +29,14 @@ router.get('/:id', (req, res) => {
 })
 
 //修改Todo 頁面 5
-router.get('/:id/edit', (req, res) => {
+router.get('/:id/edit', authenticated, (req, res) => {
   Todo.findById(req.params.id, (err, todo) => {
     if (err) return console.error(err)
     return res.render('edit', { todo: todo })
   })
 })
 //修改Todo 6
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticated, (req, res) => {
   Todo.findById(req.params.id, (err, todo) => {
     if (err) return console.error(err)
     todo.name = req.body.name
@@ -50,7 +52,7 @@ router.put('/:id', (req, res) => {
   })
 })
 //刪除Todo 7 
-router.delete('/:id/delete', (req, res) => {
+router.delete('/:id/delete', authenticated, (req, res) => {
   Todo.findById(req.params.id, (err, todo) => {
     if (err) return console.error(err)
     todo.remove(err => {

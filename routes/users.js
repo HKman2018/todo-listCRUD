@@ -10,10 +10,12 @@ router.get('/login', (req, res) => {
 
 //login submit
 router.post('/login', (req, res, next) => {
+  console.log('req.query', req.body)
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login'
   })(req, res, next)
+  console.log('req.body', req.body.email)
 })
 
 //register
