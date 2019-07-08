@@ -12,7 +12,8 @@ router.get('/new', authenticated, (req, res) => {
 
 router.post('/', authenticated, (req, res) => {
   const todo = new Todo({
-    name: req.body.name
+    name: req.body.name,
+    userId: req.user._id
   })
   todo.save((err) => {
     if (err) return console.log(err)
@@ -21,8 +22,8 @@ router.post('/', authenticated, (req, res) => {
 })
 //顯示一筆 Todo的詳細內容 3
 router.get('/:id', authenticated, (req, res) => {
-  //req.params.id
-  Todo.findById(req.params.id, (err, todo) => {
+  //req.params.id.
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     if (err) return console.log(err)
     return res.render('detail', { todo: todo })
   })
@@ -30,14 +31,14 @@ router.get('/:id', authenticated, (req, res) => {
 
 //修改Todo 頁面 5
 router.get('/:id/edit', authenticated, (req, res) => {
-  Todo.findById(req.params.id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     if (err) return console.error(err)
     return res.render('edit', { todo: todo })
   })
 })
 //修改Todo 6
 router.put('/:id', authenticated, (req, res) => {
-  Todo.findById(req.params.id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     if (err) return console.error(err)
     todo.name = req.body.name
     if (req.body.done) {
@@ -53,7 +54,7 @@ router.put('/:id', authenticated, (req, res) => {
 })
 //刪除Todo 7 
 router.delete('/:id/delete', authenticated, (req, res) => {
-  Todo.findById(req.params.id, (err, todo) => {
+  Todo.findOne({ _id: req.params.id, userId: req.user._id }, (err, todo) => {
     if (err) return console.error(err)
     todo.remove(err => {
       if (err) return console.error(err)
