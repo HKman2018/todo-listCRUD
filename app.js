@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 //mongoose connected
-mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true, useCreateIndex: true })
 // mongoose 連線後透過 mongoose.connection 拿到 Connection 的物件
 const db = mongoose.connection
 
@@ -39,6 +39,8 @@ db.once('open', () => {
 //設定session 
 app.use(session({
   secret: 'areyouswinngareyouswinng',
+  resave: 'false',
+  saveUninitialized: 'false',
 }))
 
 app.use(passport.initialize())
