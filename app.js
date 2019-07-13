@@ -6,6 +6,10 @@ const Todo = require('./models/todo')
 const session = require('express-session')
 const passport = require('passport')
 
+// 判別開發環境
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 //into methodOverride
 const methodOverride = require('method-override')
@@ -59,12 +63,12 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/home'))
 app.use('/todos', require('./routes/todo'))
 app.use('/users', require('./routes/users'))
-
+app.use('/auth', require('./routes/auths'))
 
 
 
 
 // 設定 express port 3000
 app.listen(3000, () => {
-  console.log('App is running')
+  console.log('App is running!!!!!!!!!x')
 })
