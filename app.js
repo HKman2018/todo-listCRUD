@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const Todo = require('./models/todo')
 const session = require('express-session')
 const passport = require('passport')
-
+const flash = require('connect-flash')
 // 判別開發環境
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 //mongoose connected
-mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost/todo', { useNewUrlParser: true, useCreateIndex: true })
 // mongoose 連線後透過 mongoose.connection 拿到 Connection 的物件
 const db = mongoose.connection
 
@@ -43,6 +43,8 @@ db.once('open', () => {
 //設定session 
 app.use(session({
   secret: 'areyouswinngareyouswinng',
+  resave: 'false',
+  saveUninitialized: 'false'
 }))
 
 app.use(passport.initialize())
@@ -51,9 +53,12 @@ app.use(passport.session())
 
 require('./config/passport')(passport)
 
+app.use(flash())
 app.use((req, res, next) => {
   res.locals.user = req.user
   res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 
