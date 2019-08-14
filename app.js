@@ -1,6 +1,6 @@
 const express = require('express')               // 載入 express
 const app = express()
-const exphbs = require('express-handlebars')                       // 啟用 
+const exphbs = require('express-handlebars')                       // 啟用
 const mongoose = require('mongoose')
 const Todo = require('./models/todo')
 const session = require('express-session')
@@ -40,7 +40,7 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
-//設定session 
+//設定session
 app.use(session({
   secret: 'areyouswinngareyouswinng',
   resave: 'false',
